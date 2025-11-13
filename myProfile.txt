@@ -1,0 +1,8 @@
+Name: Krish Shetty
+Email: bh230203@gmail.com
+Phone: +1 (607)235-4103
+Address: Somewhere in the Us, Illinois, 60192
+University: SUNY Binghamton
+Degree: Masters in Computer Science
+Graduation: 2025
+Skills: Python, Frontend, AI/ML
