@@ -56,7 +56,7 @@ def _validate_email_payload(data: Dict[str, Any]) -> None:
 
 
 # function to parse email
-def parseEmail(email_text: str) -> dict:
+def ParseEmail(email_text: str) -> dict:
     """
     Parse an email into structured JSON.
 
@@ -212,13 +212,13 @@ See you soon!
 if __name__ == "__main__":
     print("Email 1 content: ")
     print("-------------------")
-    print(parseEmail(email_1))
+    print(ParseEmail(email_1))
     print("-------------------")
     print("Email 2 content: ")
     print("-------------------")
-    print(parseEmail(email_2))
+    print(ParseEmail(email_2))
     print("-------------------")
     print("Email 2 content: ")
     print("-------------------")
-    print(parseEmail(email_3))
+    print(ParseEmail(email_3))
     print("-------------------")
