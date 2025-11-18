@@ -1,19 +1,28 @@
 from sentence_transformers import SentenceTransformer
 import numpy as np
+import threading
 
 _model = None
+_model_lock = threading.Lock()
 
 # function to load the embedding model
 def LoadModel():
     """
     Returns a cached instance of the SentenceTransformer model.
-    Only loads it the first time.
+    Only loads it the first time. Thread-safe.
     """
     global _model
+
+    # Double-checked locking pattern for thread safety
     if _model is None:
-        print("Loading the AI model...")
-        _model = SentenceTransformer('all-MiniLM-L6-v2')
-        print("Model loaded!")
+        with _model_lock:
+            # Check again inside the lock in case another thread loaded it
+            if _model is None:
+                print("Loading the AI model...")
+                # Load with device=None (works best with multi-threading)
+                _model = SentenceTransformer('all-MiniLM-L6-v2', device=None)
+                _model.eval()  # Set to evaluation mode
+                print("Model loaded!")
 
     return _model
 
@@ -49,12 +58,12 @@ def SemanticSearch(question: str):
     lines = LoadProfile()
 
     # turning each line into embeddings (words → numbers with meaning)
-    print("\nCreating embeddings for your profile...")
+    # print("\nCreating embeddings for your profile...")
     lineEmbeddings = model.encode(lines)
-    print(f"Created embeddings for {len(lines)} lines")
+    # print(f"Created embeddings for {len(lines)} lines")
 
     # turning question into embedding
-    print(f"\nQuestion: {question}")
+    # print(f"\nQuestion: {question}")
     questionEmbeddings = model.encode(question)
 
     # finding the most similar line using cosine similarity
