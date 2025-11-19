@@ -1,7 +1,7 @@
 from typing import TypedDict, Annotated
 from langgraph.graph import StateGraph, END
 from langgraph.checkpoint.memory import MemorySaver
-from semanticsearch import SemanticSearch
+from SemanticSearch import semantic_search
 import os
 from dotenv import load_dotenv
 import boto3
@@ -43,7 +43,7 @@ def format_messages(messages):
 
 
 # Node 1: Process Query
-def process_query_node(state: ConversationState):
+def process_query_node(state):
     """
     Process the incoming user query and add it to message history.
     Determine if semantic search is needed based on query keywords.
@@ -71,7 +71,7 @@ def process_query_node(state: ConversationState):
 
 
 # Node 2: Search Profile
-def search_profile_node(state: ConversationState):
+def search_profile_node(state):
     """
     Run semantic search on the user's query to find relevant profile information.
     """
@@ -81,7 +81,7 @@ def search_profile_node(state: ConversationState):
 
     # Run semantic search
     try:
-        search_result = SemanticSearch(current_query)
+        search_result = semantic_search(current_query)
 
         if search_result and search_result.get("score", 0) >= SIMILARITY_THRESHOLD:
             best_match = search_result.get("best_match", "")
@@ -99,7 +99,7 @@ def search_profile_node(state: ConversationState):
 
 
 # Node 3: Generate Response
-def generate_response_node(state: ConversationState):
+def generate_response_node(state):
     """
     Generate a response using Bedrock, incorporating:
     - Full conversation history
@@ -173,7 +173,7 @@ Generate your response:"""
 
 
 # Node 4: Format Output
-def format_output_node(state: ConversationState):
+def format_output_node(state):
     """
     Format the final output for the user.
     """

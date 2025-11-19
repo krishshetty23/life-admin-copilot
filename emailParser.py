@@ -10,7 +10,7 @@ load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
-def _validate_email_payload(data: Dict[str, Any]) -> None:
+def _validate_email_payload(data):
     """
     Validate that the parsed JSON has all required fields
     for the detected type. Raises ValueError if invalid.
@@ -56,7 +56,7 @@ def _validate_email_payload(data: Dict[str, Any]) -> None:
 
 
 # function to parse email
-def ParseEmail(email_text: str) -> dict:
+def parse_email(email_text):
     """
     Parse an email into structured JSON.
 
@@ -212,13 +212,13 @@ See you soon!
 if __name__ == "__main__":
     print("Email 1 content: ")
     print("-------------------")
-    print(ParseEmail(email_1))
+    print(parse_email(email_1))
     print("-------------------")
     print("Email 2 content: ")
     print("-------------------")
-    print(ParseEmail(email_2))
+    print(parse_email(email_2))
     print("-------------------")
     print("Email 2 content: ")
     print("-------------------")
-    print(ParseEmail(email_3))
+    print(parse_email(email_3))
     print("-------------------")

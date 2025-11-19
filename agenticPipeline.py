@@ -2,7 +2,7 @@ import os
 import json
 from openai import OpenAI
 from dotenv import load_dotenv
-from semanticsearch import SemanticSearch
+from SemanticSearch import semantic_search
 
 
 load_dotenv()
@@ -91,7 +91,7 @@ Return ONLY valid JSON in this exact format:
 
 
 # connecting the brain to the search engine
-def executePlan(plan):
+def execute_plan(plan):
     """
     Takes the plan from plan_actions() and executes the searches.
     Returns context needed for reply generation.
@@ -113,7 +113,7 @@ def executePlan(plan):
             continue
 
         try:
-            result = SemanticSearch(query)
+            result = semantic_search(query)
         except Exception as e:
             print(f"[executePlan] Error during SemanticSearch for query '{query}': {e}")
             confidenceScores[query] = 0.0
@@ -143,13 +143,13 @@ def executePlan(plan):
 
 
 # generating the replies
-def replyAI(email_data, context):
+def reply_ai(email_data, context):
     """
     Generate a reply using the context found by the agent.
     
     Args:
         email_data: Original parsed email
-        context: Output from executePlan() with found_context and missing_info
+        context: Output from execute_plan() with found_context and missing_info
     
     Returns:
         dict with 'reply' text and 'metadata' about what was used
@@ -250,11 +250,11 @@ if __name__ == "__main__":
     print("\n" + "="*60)
     print("STEP 2: EXECUTING SEARCHES")
     print("="*60)
-    context = executePlan(plan)
+    context = execute_plan(plan)
     print(json.dumps(context, indent=2, default=str))
     
     print("\n" + "="*60)
     print("STEP 3: GENERATING REPLY")
     print("="*60)
-    reply = replyAI(test_email, context)
+    reply = reply_ai(test_email, context)
     print(reply)

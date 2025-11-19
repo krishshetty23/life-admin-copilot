@@ -1,6 +1,6 @@
 from typing import TypedDict
 from langgraph.graph import StateGraph, END
-from emailParser import ParseEmail
+from EmailParser import parse_email
 
 # Email type to search query mapping (from your RAG pipeline)
 EMAIL_TYPE_TO_QUERY = {
@@ -18,14 +18,14 @@ class EmailState(TypedDict):
 
 
 # 2. Define your nodes (functions that modify state)
-def parse_email_node(state: EmailState):
+def parse_email_node(state):
     """
     Node 1: Parse the email and extract the email type
     """
     email_text = state["email_text"]
 
     # Use your existing ParseEmail function
-    parsed_email = ParseEmail(email_text)
+    parsed_email = parse_email(email_text)
 
     # Handle parsing errors
     if isinstance(parsed_email, dict) and "error" in parsed_email:
@@ -39,7 +39,7 @@ def parse_email_node(state: EmailState):
     return {"email_type": email_type}
 
 
-def build_query_node(state: EmailState):
+def build_query_node(state):
     """
     Node 2: Build search query based on email type
     """
@@ -57,7 +57,7 @@ def build_query_node(state: EmailState):
     return {"search_query": search_query}
 
 
-def print_result_node(state: EmailState):
+def print_result_node(state):
     """
     Node 3: Print the final search query
     """

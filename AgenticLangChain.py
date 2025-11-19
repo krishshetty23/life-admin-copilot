@@ -6,20 +6,20 @@ from langchain.agents import create_agent
 from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
 
-from semanticsearch import SemanticSearch
+from SemanticSearch import semantic_search
 
 load_dotenv()
 
 # --------- Tool wrappers using @tool decorator ---------
 
 @tool
-def search_profile(query: str) -> str:
+def search_profile(query):
     """
     Search the user's profile for information.
     Useful for finding information in the user's personal profile.
     Input should be a search query about personal info like address, email, phone, name, etc.
     """
-    searchResult = SemanticSearch(query)
+    searchResult = semantic_search(query)
     bestMatch = searchResult["best_match"]
     score = searchResult["score"]
     if score < 0.3:
@@ -28,7 +28,7 @@ def search_profile(query: str) -> str:
         return f"Best match for '{query}': {bestMatch} (score: {score:.2f})"
 
 @tool
-def calculator(expression: str) -> str:
+def calculator(expression):
     """
     Evaluate a simple math expression.
     Useful for doing math calculations. Input should be a mathematical expression like '5 + 3' or '10 * 2'.
@@ -40,13 +40,13 @@ def calculator(expression: str) -> str:
         return f"Error evaluating expression '{expression}': {e}"
 
 @tool
-def check_missing_info(query: str) -> str:
+def check_missing_info(query):
     """
     Check whether information exists in the profile.
     Use this when the search_profile doesn't find what you need.
     This helps identify what info to request from the user.
     """
-    searchResult = SemanticSearch(query)
+    searchResult = semantic_search(query)
     score = searchResult["score"]
     if score < 0.3:
         return f"This information is not in the profile. You should ask the user for: {query}"
@@ -77,7 +77,7 @@ Think step by step and use the tools to help answer questions."""
 
 # --------- Verbose thinking function ---------
 
-def run_agent_with_thinking(user_input: str):
+def run_agent_with_thinking(user_input):
     """
     Run the agent and show its thinking process step-by-step.
     """

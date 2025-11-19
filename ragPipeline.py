@@ -1,5 +1,5 @@
-from emailParser import ParseEmail
-from semanticsearch import SemanticSearch
+from EmailParser import parse_email
+from SemanticSearch import semantic_search
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
@@ -19,7 +19,7 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
 # function to process email with RAG
-def ragProcessing(email_text):
+def rag_processing(email_text):
     """
     Process an email with the RAG pipeline:
     - Parse the email into structured JSON
@@ -32,7 +32,7 @@ def ragProcessing(email_text):
     }
     """
     # parsing the email
-    parsedEmail = ParseEmail(email_text)
+    parsedEmail = parse_email(email_text)
 
     # If parsing failed, propagate the error and don't build a query
     if isinstance(parsedEmail, dict) and "error" in parsedEmail:
@@ -48,7 +48,7 @@ def ragProcessing(email_text):
 
     # semantic search over the profile
     if searchQuery:
-        profileResult = SemanticSearch(searchQuery)
+        profileResult = semantic_search(searchQuery)
 
     return {
         "parsed_email": parsedEmail,
@@ -58,7 +58,7 @@ def ragProcessing(email_text):
 
 
 # context matching
-def evaluateContext(profile_result):
+def evaluate_context(profile_result):
     """
     Evaluate whether retrieved context is relevant enough to use.
     
@@ -88,7 +88,7 @@ def evaluateContext(profile_result):
 
 
 # prompt generator
-def genPrompt(email, eval):
+def gen_prompt(email, eval):
     """
     Build a prompt for the LLM to generate an email reply.
     
@@ -164,7 +164,7 @@ def genPrompt(email, eval):
 
 
 # generating the reply
-def replyAI(prompt):
+def reply_ai(prompt):
     """
     Call OpenAI to generate an email reply based on the prompt.
     
@@ -192,7 +192,7 @@ def replyAI(prompt):
     
 
 # running the complete pipleine
-def ragPipeline(email_text, email_name):
+def rag_pipeline(email_text, email_name):
     """
     Demonstrate the complete RAG pipeline on a single email.
     Shows all intermediate steps and final result.
@@ -202,10 +202,10 @@ def ragPipeline(email_text, email_name):
     print('='*60)
     
     # Run the pipeline
-    result = ragProcessing(email_text)
-    contextEval = evaluateContext(result["profile_result"])
-    promptTxt = genPrompt(result["parsed_email"], contextEval)
-    replyTxt = replyAI(promptTxt)
+    result = rag_processing(email_text)
+    contextEval = evaluate_context(result["profile_result"])
+    promptTxt = gen_prompt(result["parsed_email"], contextEval)
+    replyTxt = reply_ai(promptTxt)
     
     # Show results
     print(f"\n📧 Email Type: {result['parsed_email'].get('type', 'unknown')}")
@@ -275,6 +275,6 @@ See you soon!
 """
 
 if __name__ == "__main__":
-    ragPipeline(email_1, "Address Change Request")
-    ragPipeline(email_2, "Payment Confirmation")
-    ragPipeline(email_3, "Appointment Reminder")
+    rag_pipeline(email_1, "Address Change Request")
+    rag_pipeline(email_2, "Payment Confirmation")
+    rag_pipeline(email_3, "Appointment Reminder")

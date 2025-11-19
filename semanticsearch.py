@@ -6,7 +6,7 @@ _model = None
 _model_lock = threading.Lock()
 
 # function to load the embedding model
-def LoadModel():
+def load_model():
     """
     Returns a cached instance of the SentenceTransformer model.
     Only loads it the first time. Thread-safe.
@@ -28,7 +28,7 @@ def LoadModel():
 
 
 # function to load the profile context
-def LoadProfile():
+def load_profile():
     """
     Reads the profile file and returns a list of non-empty lines.
     """
@@ -39,7 +39,7 @@ def LoadProfile():
 
 
 # semantic search
-def SemanticSearch(question: str):
+def semantic_search(question):
     """
     Given a question and a profile file, returns the best matching line and score.
     Returns a dict like:
@@ -52,10 +52,10 @@ def SemanticSearch(question: str):
     """
 
     # loading the embedding model (this is the AI part)
-    model = LoadModel()
+    model = load_model()
 
     # reading the file
-    lines = LoadProfile()
+    lines = load_profile()
 
     # turning each line into embeddings (words → numbers with meaning)
     # print("\nCreating embeddings for your profile...")
@@ -81,8 +81,8 @@ def SemanticSearch(question: str):
 if __name__ == "__main__":
     # asking a question
     question = "Where did I study?"
-    
-    result = SemanticSearch(question)
+
+    result = semantic_search(question)
 
     print(f"\nQuestion: {result['question']}")
     print(f"Best match: {result['best_match']}")

@@ -3,28 +3,28 @@ import json
 from dotenv import load_dotenv
 
 # Import all the building blocks
-from emailParser import ParseEmail
+from EmailParser import parse_email
 from AgenticLangChain import agent, search_profile, calculator, check_missing_info
 
 load_dotenv()
 
 
-def handle_email_end_to_end(raw_email: str) -> dict:
+def handle_email_end_to_end(raw_email):
     """
     Complete Life Admin Copilot pipeline:
     1. Parse email (Day 2)
     2. Agent analyzes and searches profile (Day 4)
     3. Generate intelligent reply
-    
+
     Returns complete result with all metadata
     """
     print("\n" + "="*60)
     print("LIFE ADMIN COPILOT - END-TO-END PIPELINE")
     print("="*60 + "\n")
-    
+
     # STEP 1: Parse the email
     print("STEP 1: Parsing email...")
-    parsed = ParseEmail(raw_email)
+    parsed = parse_email(raw_email)
     print(f"Email type detected: {parsed.get('email_type', 'unknown')}")
     print(f"Extracted fields: {list(parsed.keys())}")
     

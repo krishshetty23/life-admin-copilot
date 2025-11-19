@@ -3,7 +3,7 @@ Test suite for Life Admin Copilot
 Demonstrates the system handling various email scenarios
 """
 
-from complete_copilot import handle_email_end_to_end
+from CompleteCopilot import handle_email_end_to_end
 
 
 def test_all_scenarios():

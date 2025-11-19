@@ -1,6 +1,6 @@
 from typing import TypedDict, Literal
 from langgraph.graph import StateGraph, END
-from semanticsearch import SemanticSearch
+from SemanticSearch import semantic_search
 import os
 from dotenv import load_dotenv
 import boto3
@@ -32,7 +32,7 @@ class ConversationState(TypedDict):
 
 
 # Node 1: Parse Query
-def parse_query_node(state: ConversationState):
+def parse_query_node(state):
     """
     Parse and prepare the user query for searching.
     Initialize search attempts counter.
@@ -48,7 +48,7 @@ def parse_query_node(state: ConversationState):
 
 
 # Node 2: Search Profile (with counter increment)
-def search_profile_node(state: ConversationState):
+def search_profile_node(state):
     """
     Search the user profile for relevant information.
     Increments the search attempts counter each time.
@@ -68,7 +68,7 @@ def search_profile_node(state: ConversationState):
 
     # Run semantic search
     try:
-        search_result = SemanticSearch(search_query)
+        search_result = semantic_search(search_query)
 
         if search_result and search_result.get("score", 0) >= SIMILARITY_THRESHOLD:
             best_match = search_result.get("best_match", "")
@@ -93,7 +93,7 @@ def search_profile_node(state: ConversationState):
 
 
 # Node 3: Evaluate Results
-def evaluate_results_node(state: ConversationState):
+def evaluate_results_node(state):
     """
     Evaluate the quality of search results.
     This node doesn't modify state, just logs the evaluation.
@@ -114,7 +114,7 @@ def evaluate_results_node(state: ConversationState):
 
 
 # CONDITIONAL ROUTING FUNCTION - THE MAGIC!
-def should_continue_searching(state: ConversationState) -> Literal["search_profile", "generate_response"]:
+def should_continue_searching(state: ConversationState):
     """
     Decides whether to loop back to search again or continue to generate response.
 
@@ -146,7 +146,7 @@ def should_continue_searching(state: ConversationState) -> Literal["search_profi
 
 
 # Node 4: Generate Response
-def generate_response_node(state: ConversationState):
+def generate_response_node(state):
     """
     Generate a response using Bedrock based on search results.
     If no good results were found after max attempts, admits it doesn't know.
@@ -210,7 +210,7 @@ Generate a polite response admitting you don't have this information and suggest
 
 
 # Node 5: Format Output
-def format_output_node(state: ConversationState):
+def format_output_node(state):
     """
     Display final results.
     """
